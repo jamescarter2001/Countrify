@@ -12,7 +12,6 @@ clientID = ""
 clientSecret = ""
 
 token_url = "https://accounts.spotify.com/api/token"
-method = "POST"
 
 clientCreds = f"{clientID}:{clientSecret}"
 client64 = base64.b64encode(clientCreds.encode())
@@ -54,7 +53,7 @@ else:
     sys.exit()
 
 song_data = requests.get(f"https://api.spotify.com/v1/tracks/{track_id}", headers=song_request_header)
-if song_data.status_code == 200:
+if song_data.status_code == 200 and debug_mode == False:
     print(f'Name: {song_data.json()["name"]}')
     print(f'Artist: {song_data.json()["artists"][0]["name"]}')
     markets = song_data.json()["album"]["available_markets"]
@@ -66,9 +65,13 @@ if song_data.status_code == 200:
         print(colored('This track is available in your country.', 'green'))
     else:
         song_data = requests.get(f"https://api.spotify.com/v1/tracks/{track_id}?market={local_country_code}", headers=song_request_header)
-        if song_data.json()["is_playable"]:
+        if song_data.json()["is_playable"] == True:
             print(colored('This track is playable through a release on another album.', 'green'))
         else:
             print(colored('This track is not available in your country.', 'red'))
+
+elif debug_mode == True:
+    song_data = requests.get(f"https://api.spotify.com/v1/tracks/{track_id}", headers=song_request_header)
+    print(song_data.json())
 else:
     print(colored("Track not found.", "yellow"))
