@@ -9,3 +9,7 @@ python3 main.py
 ```
 You'll need to set clientID + clientSecret by creating a new application on the 
 Spotify developer website.
+
+## Credit
+
+__[@shirtjs](https://twitter.com/shirtjs)__: argparse integration

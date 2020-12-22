@@ -4,8 +4,15 @@ import json
 import pycountry
 import sys
 from termcolor import colored
+import argparse
 
-debug_mode = False
+parser = argparse.ArgumentParser()
+parser.add_argument('-i', '-u', '--url', nargs="?", help="Spotify URL", required=True)
+parser.add_argument('-r', '--region', nargs="?", help="Region code (US, GB, JP, NZ, etc)", default="us")
+parser.add_argument('--debug', action="store_true", help="Debug mode.")
+args = parser.parse_args()
+
+debug_mode = args.debug
 
 # You'll need to grab these from the Spotify Developer website by creating a new application.
 clientID = ""
@@ -41,8 +48,8 @@ song_request_header = {
     "Authorization": f"Bearer {token}"
 }
 
-track_id = input("Enter track URL: ").split("/")[4].split("?")[0]
-local_country_code = input("Enter your country code (eg. US): ")
+track_id = args.url.split("/")[4].split("?")[0]
+local_country_code = args.region
 
 local_country = pycountry.countries.get(alpha_2=local_country_code)
 if local_country != None:
