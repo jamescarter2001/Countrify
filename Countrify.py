@@ -33,10 +33,10 @@ requestHeader = {
 
 print("Connecting to Spotify...")
 
-data = requests.post(token_url, data=requestBody, headers=requestHeader)
+auth_response = requests.post(token_url, data=requestBody, headers=requestHeader)
 
-if data.status_code == 200:
-    token = data.json()["access_token"]
+if auth_response.status_code == 200:
+    token = auth_response.json()["access_token"]
     if debug_mode:
         print(f"Server returned token: {token}")
     print("Success!")
