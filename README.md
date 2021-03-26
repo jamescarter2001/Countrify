@@ -2,6 +2,12 @@
 
 Command line tool for checking the region availability of a Spotify track.
 
+## Setup
+
+```bash
+pip install -r requirements.txt
+```
+
 ## Usage
 
 ```bash
