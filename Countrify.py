@@ -5,18 +5,26 @@ import pycountry
 import sys
 from termcolor import colored
 import argparse
+import configparser
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-i', '-u', '--url', nargs="?", help="Spotify URL", required=True)
-parser.add_argument('-r', '--region', nargs="?", help="Region code (US, GB, JP, NZ, etc)", default="us")
+parser.add_argument('-i', '-u', '--url', nargs="?",
+                    help="Spotify URL", required=True)
+parser.add_argument('-r', '--region', nargs="?",
+                    help="Region code (US, GB, JP, NZ, etc)", default="US")
 parser.add_argument('--debug', action="store_true", help="Debug mode.")
 args = parser.parse_args()
 
+config = configparser.ConfigParser()
+config.read('config.ini')
+user_config = config['Spotify']
+
 debug_mode = args.debug
 
-# You'll need to grab these from the Spotify Developer website by creating a new application.
-clientID = ""
-clientSecret = ""
+# You'll need to generate these on the Spotify Developer website by creating a new application.
+# Add the values to config.ini
+clientID = user_config['SpotifyClientId']
+clientSecret = user_config['SpotifyClientSecret']
 
 token_url = "https://accounts.spotify.com/api/token"
 
@@ -33,7 +41,8 @@ requestHeader = {
 
 print("Connecting to Spotify...")
 
-auth_response = requests.post(token_url, data=requestBody, headers=requestHeader)
+auth_response = requests.post(
+    token_url, data=requestBody, headers=requestHeader)
 
 if auth_response.status_code == 200:
     token = auth_response.json()["access_token"]
@@ -58,7 +67,8 @@ else:
     print("Invalid country code.")
     sys.exit()
 
-song_data = requests.get(f"https://api.spotify.com/v1/tracks/{track_id}", headers=song_request_header)
+song_data = requests.get(
+    f"https://api.spotify.com/v1/tracks/{track_id}", headers=song_request_header)
 if song_data.status_code == 200 and debug_mode == False:
     print(f'Name: {song_data.json()["name"]}')
     print(f'Artist: {song_data.json()["artists"][0]["name"]}')
@@ -70,14 +80,17 @@ if song_data.status_code == 200 and debug_mode == False:
     if local_country.alpha_2 in markets:
         print(colored('This track is available in your country.', 'green'))
     else:
-        song_data = requests.get(f"https://api.spotify.com/v1/tracks/{track_id}?market={local_country_code}", headers=song_request_header)
+        song_data = requests.get(
+            f"https://api.spotify.com/v1/tracks/{track_id}?market={local_country_code}", headers=song_request_header)
         if song_data.json()["is_playable"] == True:
-            print(colored('This track is playable through a release on another album.', 'green'))
+            print(
+                colored('This track is playable through a release on another album.', 'green'))
         else:
             print(colored('This track is not available in your country.', 'red'))
 
 elif debug_mode == True:
-    song_data = requests.get(f"https://api.spotify.com/v1/tracks/{track_id}", headers=song_request_header)
+    song_data = requests.get(
+        f"https://api.spotify.com/v1/tracks/{track_id}", headers=song_request_header)
     print(song_data.json())
 else:
     print(colored("Track not found.", "yellow"))
