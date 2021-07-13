@@ -11,10 +11,10 @@ pip install -r requirements.txt
 ## Usage
 
 ```bash
-python Countrify.py -i https://open.spotify.com/example -r REGION_CODE
+python Countrify.py -i 'https://open.spotify.com/example' -r 'REGION_CODE'
 ```
-You'll need to set clientID + clientSecret by creating a new application on the 
-Spotify developer website.
+You'll need to set a Client ID + Client Secret in `config.ini` by creating a new application on the 
+Spotify Developer website.
 
 ## Credit
 
